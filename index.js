@@ -82,25 +82,23 @@ var ContactManager = new function () {
         getAll: function () {
             return Object.values(dataStore);
         }
-
     }
 };
 /**
  * https://webplatform.github.io/
  * https://developer.mozilla.org/bm/docs/Web/JavaScript
+ * http://eloquentjavascript.net/2nd_edition/
  * Entry Point
  */
 (
     function () {
         console.log("Starting Application");
         var range = (l, r) => new Array(r - l).fill().map((_, k) => k + l);
-
         range(1, 5).forEach(
             function (index) {
                 ContactManager.create("First " + index, "Last " + index);
             }
         );
-
         var allContacts = ContactManager.getAll();
         /*
         Object.values(allContacts).forEach(
@@ -109,7 +107,6 @@ var ContactManager = new function () {
             }
         );
         */
-
         console.log(Object.values(allContacts)[0].getUid());
     }
 
