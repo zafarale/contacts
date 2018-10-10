@@ -86,7 +86,7 @@ var ContactManager = (function () {
     function main() {
 
         var range = (l, r) => new Array(r - l).fill().map((_, k) => k + l);
-        range(1, 500).forEach(
+        range(1, 50).forEach(
             function (index) {
 
                 ContactManager.create("First " + index, "Last " + index);
