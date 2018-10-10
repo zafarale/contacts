@@ -82,52 +82,31 @@ var ContactManager = (function () {
     };
 })();
 
-/* 
-function isAutobot(transformer) {
-  return transformer.team === ‘Autobot’;
-}
- 
-var autobots = transformers.filter(isAutobot);
-autobots ==  [
-  {
-    name: 'Optimus Prime',
-    form: 'Freightliner Truck',
-    team: 'Autobot'
-  },
-  {
-    name: 'Bumblebee',
-    form: 'VW Beetle',
-    team: 'Autobot'
-  }
-]
-/
-*/
 (
     function main() {
 
         var range = (l, r) => new Array(r - l).fill().map((_, k) => k + l);
-        range(1, 5000).forEach(
+        range(1, 500).forEach(
             function (index) {
+
                 ContactManager.create("First " + index, "Last " + index);
             }
         );
 
 
         /**/
-        const used = process.memoryUsage();
-        for (let key in used) {
-            console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
-        }
+        // const used = process.memoryUsage();
+        //for (let key in used) {
+        //   console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+        //}
 
-        var all = ContactManager.getAll();
-        var contact = all[Math.floor(Math.random() * all.length)];
 
-        contact.setFirstName("zafar");
-        contact = ContactManager.update(contact);
-        console.assert(contact.getFirstName() === "zafar", "Updated");
+        //contact.setFirstName("zafar");
+        //contact = ContactManager.update(contact);
+        //console.assert(contact.getFirstName() === "zafar", "Updated");
         //ContactManager.delete(cuid);
-        var searched = ContactManager.search("Last 2")
-        console.log(searched.length);
+        //var searched = ContactManager.search("Last 2")
+        //console.log(searched.length);
 
     }
 )();
