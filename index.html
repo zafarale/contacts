@@ -20,7 +20,9 @@
 <body>
 
     <div class="container">
-
+        <a data-value="" class="nav-link addcontact" data-toggle="modal" href="javascript;" data-target="#contact">Add
+            New Contact</a>
+        <input type="text" id="search" />
         <ul class="list-group">
         </ul>
 
@@ -34,12 +36,38 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        ...
+                    <div class="modal-body" class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    First Name : <input type="text" id="FirstName" />
+                                    <input type="hidden" id="uid">
+                                </td>
+                                <td>
+                                    Last Name : <input type="text" id="LastName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    City : <input type="text" id="City">
+                                </td>
+                                <td>
+                                    Country : <input type="text" id="Country">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Email : <input type="text" id="Email">
+                                </td>
+                                <td>
+                                    Company : <input type="text" id="Company">
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btnsave btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -62,28 +90,100 @@
     <script>
         $(document).ready(function () {
             console.log("Started");
-            var all = ContactManager.getAll();
+            function binddata(value) {
+                $(".container ul.list-group").html('');
+                var all;
+                if (typeof (value) == 'undefined')
+                    all = ContactManager.getAll();
+                else
+                    all = value;
+                //console.log($(".container ul.nav"));
+                Object.values(all).forEach(
+                    function (contact) {
+                        $(".container ul.list-group").append(
+                            "<li class=\"list-group-item\">" +
+                            "<a data-value='" + contact.getUid() + "' class=\"nav-link names\" data-toggle=\"modal\" href='javascript;' data-target=\"#contact\">" +
+                            "<i class=\"fa fa-address-card\"> " +
+                            contact.getFirstName() + " " + contact.getLastName() +
+                            "</i>" +
+                            "</a>&nbsp;&nbsp;" +
+                            "<a data-value='" + contact.getUid() + "' class=\"nav-link remove\" href='#' data-target=\"#contact\">Remove</a>" +
+                            "</li>"
+                        );
+                    }
+                );
+                $(".nav-link.names").on('click', function (e) {
+                    //debugger;                    
+                    var contact = ContactManager.get(this.attributes["data-value"].value)[0];
+                    $(".modal-title").text(contact.getFirstName());
+                    $("#uid").val(this.attributes["data-value"].value);
+                    $("#FirstName").val(contact.getFirstName());
+                    $("#LastName").val(contact.getLastName());
+                    $("#Country").val(contact.getCountry());
+                    $("#City").val(contact.getCity());
+                    $("#Company").val(contact.getCompany());
+                    $("#Email").val(contact.getEmail());
+                });
 
-            //console.log($(".container ul.nav"));
-            Object.values(all).forEach(
-                function (contact) {
+                $(".nav-link.remove").on('click', function (e) {
+                    ContactManager.delete(this.attributes["data-value"].value)
+                    binddata();
+                });
 
-                    $(".container ul.list-group").append(
-                        "<li class=\"list-group-item\">" +
-                        "<a class=\"nav-link\" href=\"popup.html\" data-toggle=\"modal\" data-target=\"#contact\">" +
-                        "<i class=\"fa fa-address-card\">" +
-                        contact.getFirstName() + contact.getLastName() +
-                        "</i>" +
-                        "</a>" +
-                        "</li>"
-                    );
+            }
+            binddata();
 
-                    //$(".container ul.list-group li a").on('click', function (e) {
-                    //    e.preventDefault();
-                    //    alert("Hi");
-                    //});
+            $(".btnsave").on('click', function (e) {
+
+                if ($("#uid").val() != "") {
+                    var contact = ContactManager.get($("#uid").val())[0];
+                    contact.setFirstName($("#FirstName").val());
+                    contact.setLastName($("#LastName").val());
+                    contact.setCity($("#City").val());
+                    contact.setCountry($("#Country").val());
+                    contact.setCompany($("#Company").val());
+                    contact.setEmail($("#Email").val());
+                    ContactManager.update(contact);
                 }
-            );
+                else {
+                    if ($("#FirstName").val() == "") {
+                        alert("please enter first name");
+                        return;
+                    }
+                    if ($("#LastName").val() == "") {
+                        alert("please enter last name");
+                        return;
+                    }
+                    if ($("#Company").val() == "") {
+                        alert("please enter company name");
+                        return;
+                    }
+                    if ($("#City").val() == "") {
+                        alert("please enter city name");
+                        return;
+                    }
+                    if ($("#Country").val() == "") {
+                        alert("please enter country name");
+                        return;
+                    }
+                    if ($("#Email").val() == "") {
+                        alert("please enter email name");
+                        return;
+                    }
+                    ContactManager.create($("#FirstName").val(), $("#LastName").val(), $("#Company").val()
+                        , $("#City").val(), $("#Country").val(), $("#Email").val());
+                }
+            });
+
+            $('#contact').on('hidden.bs.modal', function () {
+                binddata();
+            });
+            $("#search").keyup(function () {
+                //if (this.value.length > 3) {
+                    var value = ContactManager.search(this.value);
+                    binddata(value)
+               // }
+            });
         });
     </script>
 </body>

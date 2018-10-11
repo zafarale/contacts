@@ -11,14 +11,14 @@ var ContactManager = (function () {
         });
         return uuid;
     }
-    var Contact = function (firstname, lastname) {
+    var Contact = function (firstname, lastname, companyname, cityname, countryname, emailid) {
         //console.log("%s, %s", firstname, lastname);
         var firstname = firstname;
         var lastname = lastname;
-        var company;
-        var city;
-        var country;
-        var email;
+        var company = companyname;
+        var city = cityname;
+        var country = countryname;
+        var email = emailid;
 
         var uid = createuid();
 
@@ -50,6 +50,18 @@ var ContactManager = (function () {
             getCity: function () {
                 return city;
             },
+            setCompany: function (companyname) {
+                company = companyname;
+            },
+            getCompany: function () {
+                return company;
+            },
+            setCountry: function (countryname) {
+                country = countryname;
+            },
+            getCountry: function () {
+                return country;
+            }
         }
     }
 
@@ -58,8 +70,9 @@ var ContactManager = (function () {
      * Public Methods/ Factory
      */
     return {
-        create: function (firstname, lastname) {
-            var contact = new Contact(firstname, lastname);
+        create: function (firstname, lastname, companyname, cityname, countryname, emailid) {
+            
+            var contact = new Contact(firstname, lastname, companyname, cityname, countryname, emailid);
             dataStore[contact.getUid()] = contact;
             return contact
         },
@@ -77,7 +90,8 @@ var ContactManager = (function () {
             return Object.values(dataStore);
         },
         search: function (text) {
-            return Object.values(dataStore).filter(c => c.getFirstName().indexOf(text) != -1);
+            text = text.toLowerCase();
+            return Object.values(dataStore).filter(c => (c.getFirstName().toLowerCase().indexOf(text) != -1) || (c.getLastName().toLowerCase().indexOf(text)!= -1));
         }
     };
 })();
@@ -85,11 +99,12 @@ var ContactManager = (function () {
 (
     function main() {
 
-        var range = (l, r) => new Array(r - l).fill().map((_, k) => k + l);
-        range(1, 50).forEach(
+        var range = (l, r) => new Array(r).fill().map((_, k) => k + l);
+        range(1, 5).forEach(
             function (index) {
 
-                ContactManager.create("First " + index, "Last " + index);
+                ContactManager.create("First " + index, "Last " + index,
+                    "company " + index, "city " + index, "country " + index, "email" + index + "@domain.com");
             }
         );
 
