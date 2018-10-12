@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Title</title>
+    <title>Contact Manager</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -81,9 +81,66 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
         crossorigin="anonymous"></script>
+
     <script>
         $(document).ready(function () {
             console.log("Started");
+            var totalPage = ContactManager.totalRecords() / ContactManager.pageSize();
+            var pageNumber = 0;
+            //binddata();
+            binddatabyIndex(0, ContactManager.pageSize());
+            ;
+            $(window).scroll(function () {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {                    
+                    pageNumber = pageNumber + 1;
+                    if (pageNumber < totalPage) {
+                        binddatabyIndex(((pageNumber - 1) * ContactManager.pageSize()), pageNumber * ContactManager.pageSize());
+                    }
+                }
+            });
+            function binddatabyIndex(startIndex, endIndex) {
+                $(".container ul.list-group").html('');
+                var all;
+                if ($("#search").val().length == 0)
+                    all = ContactManager.getbyIndex(startIndex, endIndex);
+                else if ($("#search").val().length >3)
+                    all = ContactManager.search($("#search").val(),startIndex, endIndex);
+                Object.values(all).forEach(
+                    function (contact) {
+                        $(".container ul.list-group").append(
+                            "<li class=\"list-group-item\">" +
+                            "<a data-value='" + contact.getUid() + "' class=\"nav-link names\" data-toggle=\"modal\" href='javascript;' data-target=\"#contact\">" +
+                            "<i class=\"fa fa-address-card\"> Id :" +
+                            contact.getid() + " " + contact.getFirstName() + " " + contact.getLastName() +
+                            "</i>" +
+                            "</a>&nbsp;&nbsp;" +
+                            "<a data-value='" + contact.getUid() + "' class=\"nav-link remove\" href='javascript:void(0)' data-target=\"#contact\">Remove</a>" +
+                            "</li>"
+                        );
+                    }
+                );
+                $(".nav-link.names").on('click', function (e) {
+                    //debugger;                    
+                    var contact = ContactManager.get(this.attributes["data-value"].value)[0];
+                    $(".modal-title").text(contact.getFirstName());
+                    $("#uid").val(this.attributes["data-value"].value);
+                    $("#FirstName").val(contact.getFirstName());
+                    $("#LastName").val(contact.getLastName());
+                    $("#Country").val(contact.getCountry());
+                    $("#City").val(contact.getCity());
+                    $("#Company").val(contact.getCompany());
+                    $("#Email").val(contact.getEmail());
+                });
+
+                $(".nav-link.remove").on('click', function (e) {
+                    ContactManager.delete(this.attributes["data-value"].value);
+                    initialIndex = 0;
+                    finalIndex = 10;
+                    binddatabyIndex(((pageNumber - 1) * ContactManager.pageSize()), pageNumber * ContactManager.pageSize());
+                });
+
+            }
+            /*    
             function binddata(value) {
                 $(".container ul.list-group").html('');
                 var all;
@@ -91,14 +148,14 @@
                     all = ContactManager.getAll();
                 else
                     all = value;
-                //console.log($(".container ul.nav"));
+
                 Object.values(all).forEach(
                     function (contact) {
                         $(".container ul.list-group").append(
                             "<li class=\"list-group-item\">" +
                             "<a data-value='" + contact.getUid() + "' class=\"nav-link names\" data-toggle=\"modal\" href='javascript;' data-target=\"#contact\">" +
-                            "<i class=\"fa fa-address-card\"> " +
-                            contact.getFirstName() + " " + contact.getLastName() +
+                            "<i class=\"fa fa-address-card\"> Id :" +
+                            contact.getid() + " " + contact.getFirstName() + " " + contact.getLastName() +
                             "</i>" +
                             "</a>&nbsp;&nbsp;" +
                             "<a data-value='" + contact.getUid() + "' class=\"nav-link remove\" href='#' data-target=\"#contact\">Remove</a>" +
@@ -121,20 +178,19 @@
 
                 $(".nav-link.remove").on('click', function (e) {
                     ContactManager.delete(this.attributes["data-value"].value)
-                    binddata();
+                    binddatabyIndex(initialIndex,finalIndex);
                 });
 
-            }
-            $(".nav-link.addcontact").on('click', function (e) {                
+            }*/
+            $(".nav-link.addcontact").on('click', function (e) {
                 $("#uid").val("");
                 $("#FirstName").val("");
                 $("#LastName").val("");
                 $("#Country").val("");
                 $("#City").val("");
                 $("#Company").val("");
-                $("#Email").val("");    
+                $("#Email").val("");
             });
-            binddata();
 
             $(".btnsave").on('click', function (e) {
 
@@ -147,6 +203,9 @@
                     contact.setCompany($("#Company").val());
                     contact.setEmail($("#Email").val());
                     ContactManager.update(contact);
+                    $(".container ul.list-group").html('');
+                    initialIndex = 0;
+                    binddatabyIndex(((pageNumber - 1) * ContactManager.pageSize()), pageNumber * ContactManager.pageSize());
                 }
                 else {
                     if ($("#FirstName").val() == "") {
@@ -179,13 +238,14 @@
             });
 
             $('#contact').on('hidden.bs.modal', function () {
-                binddata();
+                //$(".container ul.list-group").html('');
+                //binddatabyIndex(initialIndex,finalIndex);
             });
             $("#search").keyup(function () {
                 //if (this.value.length > 3) {
-                var value = ContactManager.search(this.value);
-                binddata(value)
-                // }
+                   // var value = ContactManager.search(this.value);
+                    binddatabyIndex(0, ContactManager.pageSize());
+                //}
             });
         });
     </script>
