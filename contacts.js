@@ -12,13 +12,14 @@ var ContactManager = (function () {
         return uuid;
     }
     var Contact = function (firstname, lastname, companyname, cityname, countryname, emailid) {
-        //console.log("%s, %s", firstname, lastname);
+        
         var firstname = firstname;
         var lastname = lastname;
         var company = companyname;
         var city = cityname;
         var country = countryname;
         var email = emailid;
+        var id;
 
         var uid = createuid();
 

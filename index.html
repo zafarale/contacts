@@ -72,12 +72,6 @@
                 </div>
             </div>
         </div>
-        <!--
-        <div class="form-group">
-            <label for=""></label>
-            <input type="text|password|email|number|submit|date|datetime|datetime-local|month|color|range|search|tel|time|url|week"
-                class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
-        </div>-->
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -131,6 +125,15 @@
                 });
 
             }
+            $(".nav-link.addcontact").on('click', function (e) {                
+                $("#uid").val("");
+                $("#FirstName").val("");
+                $("#LastName").val("");
+                $("#Country").val("");
+                $("#City").val("");
+                $("#Company").val("");
+                $("#Email").val("");    
+            });
             binddata();
 
             $(".btnsave").on('click', function (e) {
@@ -180,9 +183,9 @@
             });
             $("#search").keyup(function () {
                 //if (this.value.length > 3) {
-                    var value = ContactManager.search(this.value);
-                    binddata(value)
-               // }
+                var value = ContactManager.search(this.value);
+                binddata(value)
+                // }
             });
         });
     </script>
